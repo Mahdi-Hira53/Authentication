@@ -1,3 +1,4 @@
+import 'package:authentication/auth/auth_gate.dart';
 import 'package:authentication/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
@@ -45,7 +46,7 @@ class WelcomePage extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>Login()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>AuthGate()));
                   },
                   child: Text("Next", style: TextStyle(
                     fontSize: 20,

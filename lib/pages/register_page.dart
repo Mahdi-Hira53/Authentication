@@ -1,3 +1,4 @@
+import 'package:authentication/auth/auth_services.dart';
 import 'package:authentication/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
@@ -9,11 +10,50 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
+
+  final authService = AuthServices();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _conPasswordController = TextEditingController();
+
+  void signUp()async{
+    final email = _emailController.text;
+    final password = _passwordController.text;
+    final confirmPassword = _conPasswordController.text;
+
+    if(password != confirmPassword){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password don't match")));
+    return;
+    }
+
+    try{
+      await authService.signUpWithEmailPassword(email, password);
+
+      if (mounted) {
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Registration Successful"),
+            backgroundColor: Colors.green,
+          ),
+        );
+        /*Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Login()),
+        );*/
+      }
+    }catch(e){
+     if(mounted){
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error $e")));
+    }
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size; // Full screen size
     final height = size.height;
     final width = size.width;
+
 
     return Scaffold(
       body: Stack(
@@ -61,6 +101,7 @@ class _RegistrationState extends State<Registration> {
                           ),
                           SizedBox(height: height * 0.03),
                           TextField(
+                            controller: _emailController,
                             decoration: InputDecoration(
                               labelText: "Email",
                               border: OutlineInputBorder(
@@ -71,6 +112,7 @@ class _RegistrationState extends State<Registration> {
                           ),
                           SizedBox(height: height * 0.02),
                           TextField(
+                            controller: _passwordController,
                             obscureText: true,
                             decoration: InputDecoration(
                               labelText: "Password",
@@ -82,6 +124,7 @@ class _RegistrationState extends State<Registration> {
                           ),
                           SizedBox(height: height * 0.02),
                           TextField(
+                            controller: _conPasswordController,
                             obscureText: true,
                             decoration: InputDecoration(
                               labelText: "Confirm Password",
@@ -101,7 +144,7 @@ class _RegistrationState extends State<Registration> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: signUp,
                             child: Text(
                               "Sign Up",
                               style: TextStyle(
