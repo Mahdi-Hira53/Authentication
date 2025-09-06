@@ -1,4 +1,5 @@
 import 'package:authentication/pages/login_page.dart';
+import 'package:authentication/pages/notes_page.dart';
 import 'package:authentication/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -17,7 +18,7 @@ class AuthGate extends StatelessWidget {
         final session = snapshot.hasData ? snapshot.data!.session : null;
 
         if(session != null){
-          return ProfilePage();
+          return NotesPage();
         }else{
           return Login();
         }
