@@ -11,14 +11,65 @@ class NotesPage extends StatefulWidget {
 
 class _NotesPageState extends State<NotesPage> {
   final _noteController = TextEditingController();
+  final _titleController = TextEditingController();
   final notesdb = NotesDatabase();
   final authService = AuthServices();
+
+  String choose = "daily";
+  List<String> chooseList = ["daily", "Weekly", "Monthly"];
+
   void addNewNotes() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text("Add new note"),
-        content: TextField(controller: _noteController),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _titleController,
+              decoration: InputDecoration(
+                labelText: "Title",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: BorderSide(color: Colors.black),
+                ),
+              ),
+            ),
+            SizedBox(height: 10,),
+            TextField(
+              controller: _noteController,
+              decoration: InputDecoration(
+                labelText: "Content",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: BorderSide(color: Colors.black),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            DropdownButtonFormField<String>(
+              decoration: InputDecoration(
+                labelText: "Select Option",
+                border: OutlineInputBorder(),
+              ),
+              value: choose,
+              items: chooseList.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (newValue) {
+                setState(() {
+                  choose = newValue!;
+                });
+              },
+            ),
+          ],
+        ),
         actions: [
           TextButton(
             onPressed: () {
@@ -30,7 +81,7 @@ class _NotesPageState extends State<NotesPage> {
           TextButton(
             onPressed: () async {
               try {
-                await notesdb.insertNotes(_noteController.text);
+                await notesdb.insertNotes(_titleController.text,_noteController.text, choose);
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Insertion Successful")),
@@ -51,12 +102,58 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 
-  void updateNotes(dynamic id, String oldContent){
+  void updateNotes(dynamic id, String oldContent) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text("Update note"),
-        content: TextField(controller: _noteController),
+        content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _titleController,
+            decoration: InputDecoration(
+              labelText: "Title",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5),
+                borderSide: BorderSide(color: Colors.black),
+              ),
+            ),
+          ),
+          SizedBox(height: 10,),
+          TextField(
+            controller: _noteController,
+            decoration: InputDecoration(
+              labelText: "Content",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5),
+                borderSide: BorderSide(color: Colors.black),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          DropdownButtonFormField<String>(
+            decoration: InputDecoration(
+              labelText: "Select Option",
+              border: OutlineInputBorder(),
+            ),
+            value: choose,
+            items: chooseList.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (newValue) {
+              setState(() {
+                choose = newValue!;
+              });
+            },
+          ),
+        ],
+      ),
         actions: [
           TextButton(
             onPressed: () {
@@ -90,19 +187,19 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 
-  void deleteNotes(dynamic id)async{
-    try{
+  void deleteNotes(dynamic id) async {
+    try {
       await notesdb.deleteNotes(id);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Deletion Successful")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Deletion Successful")));
       }
-    }catch(e){
+    } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error: $e")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Error: $e")));
       }
     }
   }
@@ -136,12 +233,18 @@ class _NotesPageState extends State<NotesPage> {
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      IconButton(onPressed: (){
-                        deleteNotes(id);
-                      }, icon: Icon(Icons.delete)),
-                      IconButton(onPressed: () {
-                        updateNotes(id, content);
-                      }, icon: Icon(Icons.edit)),
+                      IconButton(
+                        onPressed: () {
+                          deleteNotes(id);
+                        },
+                        icon: Icon(Icons.delete),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          updateNotes(id, content);
+                        },
+                        icon: Icon(Icons.edit),
+                      ),
                     ],
                   ),
                 ),

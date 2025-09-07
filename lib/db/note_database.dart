@@ -6,9 +6,9 @@ class NotesDatabase{
   final notesTable = Supabase.instance.client.from('notes');
   final authService = AuthServices();
   //insert
-  Future<void>insertNotes(String content)async{
+  Future<void>insertNotes(String title, String content, String choose)async{
     final uid = authService.getCurrentUserUid();
-    await notesTable.insert({'content':content, 'uid':uid});
+    await notesTable.insert({'title':title, 'content':content, 'choose':choose,'uid':uid});
   }
   //update
   Future<void>updateNotes(dynamic noteId, String content)async{
