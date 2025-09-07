@@ -1,17 +1,9 @@
-import 'package:authentication/pages/login_page.dart';
+
+import 'package:authentication/auth/auth_gate.dart';
 import 'package:authentication/pages/notes_page.dart';
-import 'package:authentication/pages/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'auth/auth_gate.dart';
-/*
-crud
-c create/insert
-r retrieve/display/fetch
-u update
-d delete
- */
 void main()async{
   //supabase initialize
   await Supabase.initialize(
