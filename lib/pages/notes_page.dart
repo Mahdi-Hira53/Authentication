@@ -102,7 +102,7 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 
-  void updateNotes(dynamic id, String oldContent) {
+  void updateNotes(dynamic id, String oldTitle, String oldContent, String oldChoiceList) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -166,7 +166,7 @@ class _NotesPageState extends State<NotesPage> {
             onPressed: () async {
               try {
                 //final updateNote = _noteController.text;
-                await notesdb.updateNotes(id, _noteController.text);
+                await notesdb.updateNotes(id, _titleController.text, _noteController.text, choose);
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Update Successfully")),
@@ -191,6 +191,7 @@ class _NotesPageState extends State<NotesPage> {
     try {
       await notesdb.deleteNotes(id);
       if (mounted) {
+        setState(() {});
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text("Deletion Successful")));
@@ -225,11 +226,14 @@ class _NotesPageState extends State<NotesPage> {
             itemBuilder: (context, index) {
               final note = notes[index];
               final id = note['id'];
+              final title = note['title'];
               final content = note['content'];
+              final choose = note['choose'];
               return Card(
                 child: ListTile(
-                  leading: Text("$id"),
-                  title: Text(content),
+                  //leading: Text("$id"),
+                  title: Text(title!),
+                  subtitle: Text(content!),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -241,7 +245,7 @@ class _NotesPageState extends State<NotesPage> {
                       ),
                       IconButton(
                         onPressed: () {
-                          updateNotes(id, content);
+                          updateNotes(id, title, content, choose);
                         },
                         icon: Icon(Icons.edit),
                       ),

@@ -11,8 +11,8 @@ class NotesDatabase{
     await notesTable.insert({'title':title, 'content':content, 'choose':choose,'uid':uid});
   }
   //update
-  Future<void>updateNotes(dynamic noteId, String content)async{
-    await notesTable.update({'content':content}).eq('id', noteId);
+  Future<void>updateNotes(dynamic noteId, String title, String content, String choose)async{
+    await notesTable.update({'title': title,'content':content, 'choose': choose}).eq('id', noteId);
   }
   //delete
   Future<void>deleteNotes(dynamic noteId)async{
