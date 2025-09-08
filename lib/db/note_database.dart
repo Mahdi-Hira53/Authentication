@@ -6,13 +6,13 @@ class NotesDatabase{
   final notesTable = Supabase.instance.client.from('notes');
   final authService = AuthServices();
   //insert
-  Future<void>insertNotes(String title, String content, String choose)async{
+  Future<void>insertNotes(String content)async{
     final uid = authService.getCurrentUserUid();
-    await notesTable.insert({'title':title, 'content':content, 'choose':choose,'uid':uid});
+    await notesTable.insert({'content':content, 'uid':uid});
   }
   //update
-  Future<void>updateNotes(dynamic noteId, String title, String content, String choose)async{
-    await notesTable.update({'title': title,'content':content, 'choose': choose}).eq('id', noteId);
+  Future<void>updateNotes(dynamic noteId, String content)async{
+    await notesTable.update({'content':content}).eq('id', noteId);
   }
   //delete
   Future<void>deleteNotes(dynamic noteId)async{
